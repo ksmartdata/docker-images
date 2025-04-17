@@ -49,3 +49,11 @@ jobs:
           tags: ghcr.io/${{ matrix.target }}:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Scan image vulnerabilities
+        uses: aquasecurity/trivy-action@v0.30.0
+        with:
+          image: ghcr.io/${{ matrix.target }}:ci
+          format: table
+          output: summary
+          exit-code: '1'
+          severity: 'CRITICAL'
