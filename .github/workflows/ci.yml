@@ -16,13 +16,13 @@ jobs:
         if: ${{ success() }}
         run: echo "All build targets in CI configuration match directories in images folder."
 
-  check-dockerfile-sources:
+  check-dockerfile-source:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Check Dockerfile sources
-        run: ./scripts/check-source.sh        
+        run: ./scripts/check-dockerfile-source.sh        
       - name: Show check result
         if: ${{ success() }}
         run: echo "All Dockerfile sources are using specific commit hashes, tags or releases instead of master/main branches."
