@@ -5,14 +5,10 @@ on:
       job:
         description: 'which docker build to run'
         required: true
-        default: 'rocketmq-exporter'
-        type: choice
-        options:
-          - 'rocketmq-exporter'
+        type: string
       tag:
         description: 'tag'
         required: true
-        default: 'v0.0.1'
         type: string
 
 env:
@@ -40,8 +36,8 @@ jobs:
       - name: Build && Push
         uses: docker/build-push-action@v3.1.1
         with:
-          context: ./${{ inputs.job }}
-          file: ./${{ inputs.job }}/Dockerfile
+          context: ./images/${{ inputs.job }}
+          file: ./images/${{ inputs.job }}/Dockerfile
           github-token: ${{ secrets.GITHUB_TOKEN }}
           push: true
           platforms: ${{ env.BUILD_PLATFORM }}
