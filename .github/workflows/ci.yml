@@ -54,8 +54,12 @@ jobs:
         uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: ghcr.io/ksmartdata/${{ matrix.target }}:v9.9.9
-          format: table
-          output: summary
+          format: sarif
           exit-code: '1'
           severity: 'CRITICAL'
           ignore-unfixed: true
+          output: ./trivy-report.sarif
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ./trivy-report.sarif
