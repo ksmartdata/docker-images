@@ -5,14 +5,10 @@ on:
       job:
         description: 'which docker build to run'
         required: true
-        default: 'rocketmq-exporter'
-        type: choice
-        options:
-          - 'rocketmq-exporter'
+        type: string
       tag:
         description: 'tag'
         required: true
-        default: 'v0.0.1'
         type: string
 
 env:
