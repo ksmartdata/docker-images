@@ -1,5 +1,7 @@
 FROM --platform=$TARGETPLATFORM maven:3.6.3-jdk-8-openj9 AS builder
 
+RUN apt-get update && apt-get install -y unzip
+
 RUN curl -Lo rocketmq-exporter.zip https://github.com/apache/rocketmq-exporter/archive/2f2feb752b2a1a4b3fce300b5a697b719a16cca8.zip
 
 RUN unzip rocketmq-exporter.zip
