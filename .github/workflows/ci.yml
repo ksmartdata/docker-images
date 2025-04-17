@@ -47,19 +47,19 @@ jobs:
           push: false
           load: true
           platforms: linux/amd64
-          tags: ghcr.io/ksmartdata/${{ matrix.target }}:v9.9.9
+          tags: ghcr.io/ksmartdata/${{ matrix.target }}:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Scan image vulnerabilities
         uses: aquasecurity/trivy-action@0.30.0
         with:
-          image-ref: ghcr.io/ksmartdata/${{ matrix.target }}:v9.9.9
-          format: 'table'
-          exit-code: '1'
+          image-ref: ghcr.io/ksmartdata/${{ matrix.target }}:ci
+          format: 'sarif'
           severity: 'CRITICAL'
           ignore-unfixed: true
-      # - name: Upload Trivy scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   if: always()
-      #   with:
-      #     sarif_file: ./trivy-report.sarif
+          output: ./trivy-report.sarif
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: ./trivy-report.sarif
