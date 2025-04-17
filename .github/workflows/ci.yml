@@ -54,7 +54,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: ghcr.io/ksmartdata/${{ matrix.target }}:v9.9.9
-          format: json
+          format: 'table'
           exit-code: '1'
           severity: 'CRITICAL'
           ignore-unfixed: true
