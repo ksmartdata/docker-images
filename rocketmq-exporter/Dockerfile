@@ -14,7 +14,7 @@ FROM --platform=$TARGETPLATFORM openjdk:8-jre-alpine
 
 RUN echo "Asia/Shanghai" > /etc/timezone
 
-COPY --from=builder /rocketmq-exporter/target/rocketmq-exporter-0.0.3-SNAPSHOT-exec.jar /rocketmq-exporter.jar
+COPY --from=builder /rocketmq-exporter/target/*-SNAPSHOT-exec.jar /rocketmq-exporter.jar
 
 EXPOSE 5557
 
