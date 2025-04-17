@@ -5,6 +5,17 @@ on:
       - main
 
 jobs:
+  check-ci-build-target:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Check CI build targets
+        run: ./scripts/check-ci-build-target.sh
+      - name: Show check result
+        if: ${{ success() }}
+        run: echo "All build targets in CI configuration match directories in images folder."
+
   check-dockerfile-sources:
     runs-on: ubuntu-latest
     steps:
@@ -31,8 +42,8 @@ jobs:
       - name: Build && Push
         uses: docker/build-push-action@v3.1.1
         with:
-          context: ./${{ matrix.target }}
-          file: ./${{ matrix.target }}/Dockerfile
+          context: ./images/${{ matrix.target }}
+          file: ./images/${{ matrix.target }}/Dockerfile
           push: false
           platforms: linux/amd64,linux/arm64
           tags: ghcr.io/${{ matrix.target }}:ci
