@@ -1,0 +1,17 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-dockerfile-sources:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Check Dockerfile sources
+        run: ./scripts/check-source.sh        
+      - name: Show check result
+        if: ${{ success() }}
+        run: echo "All Dockerfile sources are using specific commit hashes, tags or releases instead of master/main branches." 
