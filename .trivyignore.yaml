@@ -1,13 +1,16 @@
 vulnerabilities:
+
   - id: CVE-2023-24538
     paths:
       - "usr/local/bin/gosu"
-    statement: "gosu not use this package"
+    statement: "gosu not use html/template"
+
   - id: CVE-2023-24540
     paths:
       - "usr/local/bin/gosu"
-    statement: "gosu not use this package"
+    statement: "gosu not use html/template"
+
   - id: CVE-2024-24790
     paths:
       - "usr/local/bin/gosu"
-    statement: "gosu not use this package"
+    statement: "gosu not use net/netip"
