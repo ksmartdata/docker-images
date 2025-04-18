@@ -14,3 +14,14 @@ vulnerabilities:
     paths:
       - "usr/local/bin/gosu"
     statement: "gosu not use net/netip"
+
+  - id: CVE-2016-1000027
+    paths:
+      - "rocketmq-exporter.jar"
+    statement: "rocketmq-exporter does not use HttpInvokerServiceExporter"
+    
+  - id: CVE-2025-24813
+    paths:
+      - "rocketmq-exporter.jar"
+    statement: "TODO: need add <tomcat.version>9.0.104</tomcat.version>"
+    
