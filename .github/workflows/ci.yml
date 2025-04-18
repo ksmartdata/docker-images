@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Check CI build targets
         run: ./scripts/check-ci-build-target.sh
       - name: Show check result
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Check Dockerfile sources
         run: ./scripts/check-dockerfile-source.sh        
       - name: Show check result
@@ -34,7 +34,7 @@ jobs:
         target: ["rocketmq-exporter", "rclone-mongo", "mysqld-exporter", "percona-toolkit"]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
