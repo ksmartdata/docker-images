@@ -52,7 +52,6 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Scan image vulnerabilities
         uses: aquasecurity/trivy-action@0.30.0
-        continue-on-error: true
         with:
           image-ref: ghcr.io/ksmartdata/${{ matrix.target }}:ci
           format: 'table'
