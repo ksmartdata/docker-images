@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: ["rocketmq-exporter"]
+        target: ["rocketmq-exporter", "rclone-mongo"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -52,13 +52,13 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Scan image vulnerabilities
         uses: aquasecurity/trivy-action@0.30.0
-        continue-on-error: true
         with:
           image-ref: ghcr.io/ksmartdata/${{ matrix.target }}:ci
           format: 'table'
           severity: 'CRITICAL'
           ignore-unfixed: true
           exit-code: '1'
+          trivy-config: .trivy.yaml
           # output: ./trivy-report.sarif
       # - name: Upload Trivy scan results to GitHub Security tab
       #   uses: github/codeql-action/upload-sarif@v3
