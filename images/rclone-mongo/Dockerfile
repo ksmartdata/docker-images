@@ -6,10 +6,7 @@ COPY rootfs/ /
 
 # To fix the error: The following signatures were invalid: EXPKEYSIG 4B7C549A058F8B6B MongoDB 4.2 Release Signing Key <packaging@mongodb.com>
 RUN apt-get update --allow-insecure-repositories
-RUN apt-get install -y wget gnupg
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
 
-RUN apt-get update -y
 RUN apt-get install -y unzip curl bash
 
 RUN curl https://rclone.org/install.sh | bash
