@@ -9,16 +9,6 @@ RUN apt-get update --allow-insecure-repositories
 
 RUN apt-get install -y unzip curl bash
 
-# Install latest gosu version to fix security vulnerabilities
-RUN set -eux; \
-    apt-get install -y ca-certificates wget; \
-    GOSU_VERSION=1.17; \
-    wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)"; \
-    wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture).asc"; \
-    chmod +x /usr/local/bin/gosu; \
-    gosu --version; \
-    gosu nobody true
-
 RUN curl https://rclone.org/install.sh | bash
 
 RUN cp /usr/bin/rclone /usr/local/bin/
