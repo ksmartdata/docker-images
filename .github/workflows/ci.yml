@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: ["rocketmq-exporter"]
+        target: ["rocketmq-exporter", "rclone-mongo"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
