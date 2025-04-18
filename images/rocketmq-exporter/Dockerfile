@@ -10,7 +10,7 @@ RUN unzip rocketmq-exporter.zip
 
 RUN cd rocketmq-exporter-${ROCKETMQ_EXPORTER_VERSION} && mvn clean package -Dmaven.test.skip=truedocker
 
-FROM --platform=$TARGETPLATFORM eclipse-temurin:8-jre-alpine
+FROM --platform=$TARGETPLATFORM eclipse-temurin:8-jre
 
 RUN echo "Asia/Shanghai" > /etc/timezone
 
