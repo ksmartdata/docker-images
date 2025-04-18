@@ -1,10 +1,1 @@
-vulnerability:
-  ignoreFile: .trivyignore
-  ignoreUnfixed: true
-  ignore:
-    - id: CVE-2023-24538
-      path: usr/local/bin/gosu
-    - id: CVE-2023-24540
-      path: usr/local/bin/gosu
-    - id: CVE-2024-24790
-      path: usr/local/bin/gosu 
+ignorefile: .trivyignore.yaml
