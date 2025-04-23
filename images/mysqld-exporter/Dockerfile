@@ -8,7 +8,7 @@ RUN wget https://github.com/ksmartdata/mysqld_exporter/archive/refs/heads/custom
 
 RUN cd /mysqld_exporter-customizations && \
     go mod tidy && \
-    CGO_ENABLED=0 go build -o /mysqld_exporter mysqld_exporter.go
+    CGO_ENABLED=0 go build -o /mysqld_exporter
 
 FROM quay.io/prometheus/busybox:latest
 
