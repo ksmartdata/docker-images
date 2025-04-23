@@ -27,11 +27,11 @@ jobs:
         if: ${{ success() }}
         run: echo "All Dockerfile sources are using specific commit hashes, tags or releases instead of master/main branches."
 
-  build-images:
+  build-and-scan:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: ["rocketmq-exporter", "rclone-mongo"]
+        target: ["rocketmq-exporter", "rclone-mongo", "mysqld-exporter"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
