@@ -41,7 +41,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.10.0
 
       - name: Build for test multi-platform
-        uses: docker/build-push-action@v3.1.1
+        uses: docker/build-push-action@v6.15.0
         with:
           context: ./images/${{ matrix.target }}
           file: ./images/${{ matrix.target }}/Dockerfile
@@ -52,7 +52,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build for scan vulnerabilities
-        uses: docker/build-push-action@v3.1.1
+        uses: docker/build-push-action@v6.15.0
         with:
           context: ./images/${{ matrix.target }}
           file: ./images/${{ matrix.target }}/Dockerfile
