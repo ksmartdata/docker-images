@@ -27,7 +27,7 @@ jobs:
         if: ${{ success() }}
         run: echo "All Dockerfile sources are using specific commit hashes, tags or releases instead of master/main branches."
 
-  build-images:
+  build-and-scan:
     runs-on: ubuntu-latest
     strategy:
       matrix:
