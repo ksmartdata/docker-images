@@ -19,3 +19,23 @@ vulnerabilities:
 
   - id: CVE-2016-1000027 # https://avd.aquasec.com/nvd/cve-2016-1000027
     statement: "Functionality not used, risk accepted"
+
+  - id: CVE-2022-23806
+    paths:
+      - "build/percona-toolkit-3.x/util/mysql_random_data_load"
+    statement: "only used in test"
+
+  - id: CVE-2023-24538
+    paths:
+      - "build/percona-toolkit-3.x/util/mysql_random_data_load"
+    statement: "only used in test"
+
+  - id: CVE-2023-24540
+    paths:
+      - "build/percona-toolkit-3.x/util/mysql_random_data_load"
+    statement: "only used in test"
+
+  - id: CVE-2024-24790
+    paths:
+      - "build/percona-toolkit-3.x/util/mysql_random_data_load"
+    statement: "only used in test"
