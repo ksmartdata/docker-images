@@ -13,7 +13,7 @@ RUN yum -y install unzip wget cmake openssl-devel libaio libaio-devel automake a
     bison libtool ncurses-devel libgcrypt-devel libev-devel libcurl-devel zlib-devel \
     vim-common gcc-toolset-11-gcc gcc-toolset-11-gcc-c++ gcc-toolset-11-binutils \
     cyrus-sasl-devel libudev-devel \
-    perl-DBI perl-DBD-MySQL
+    perl-DBI perl-DBD-MySQL perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker
 
 # 1. install go
 ENV GO_VERSION=1.22.4
@@ -39,7 +39,8 @@ RUN go version
 RUN wget -O percona-toolkit.zip https://github.com/percona/percona-toolkit/archive/refs/heads/3.x.zip
 RUN unzip percona-toolkit.zip
 WORKDIR /build/percona-toolkit-3.x
-RUN yum install perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker -y
+RUN pwd
+RUN ls -l
 RUN perl Makefile.PL
 RUN make
 RUN make install
