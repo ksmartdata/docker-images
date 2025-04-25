@@ -25,9 +25,5 @@ COPY --from=builder /mysql-operator-sidecar /usr/local/bin/
 COPY --from=builder /usr/bin/rclone /usr/local/bin/
 RUN chmod +x /usr/local/bin/mysql-operator-sidecar
 RUN chmod +x /usr/local/bin/rclone
-
-# debug
-RUN rclone --version
-
 RUN chown 999.999 /usr/local/bin/mysql-operator-sidecar
 
