@@ -36,6 +36,7 @@ ENV PATH=$PATH:/usr/local/go/bin
 RUN go version
 
 # 2. install percona-toolkit
+WORKDIR /build
 RUN wget -O percona-toolkit.zip https://github.com/percona/percona-toolkit/archive/refs/heads/3.x.zip
 RUN unzip percona-toolkit.zip
 WORKDIR /build/percona-toolkit-3.x
