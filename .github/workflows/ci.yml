@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: ["rocketmq-exporter", "rclone-mongo", "mysqld-exporter", "percona-toolkit"]
+        target: ["rocketmq-exporter", "rclone-mongo", "mysqld-exporter", "percona-toolkit", "mysql-operator-sidecar-5.7"]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
