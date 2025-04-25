@@ -15,10 +15,6 @@ RUN yum -y install unzip wget cmake openssl-devel libaio libaio-devel automake a
     cyrus-sasl-devel libudev-devel \
     perl-DBI perl-DBD-MySQL
 
-RUN wget -O libkmip.zip https://github.com/Percona-Lab/libkmip/archive/0ecda33598838b67bb4bb7a0005c92eea8b7405a.zip
-RUN unzip libkmip.zip
-RUN cp -r libkmip-0ecda33598838b67bb4bb7a0005c92eea8b7405a/. extra/libkmip/
-
 # 1. install go
 ENV GO_VERSION=1.22.4
 ENV GO_DOWNLOAD_URL=https://golang.org/dl/
