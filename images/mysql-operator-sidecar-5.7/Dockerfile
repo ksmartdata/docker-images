@@ -23,8 +23,11 @@ FROM --platform=$TARGETPLATFORM jiuker/mysql-operator-sidecar-5.7:v0.6.2
 USER root
 COPY --from=builder /mysql-operator-sidecar /usr/local/bin/
 COPY --from=builder /usr/bin/rclone /usr/local/bin/
+RUN chmod +x /usr/local/bin/mysql-operator-sidecar
+RUN chmod +x /usr/local/bin/rclone
+
 # debug
 RUN rclone --version
-RUN chmod +x /usr/local/bin/mysql-operator-sidecar
+
 RUN chown 999.999 /usr/local/bin/mysql-operator-sidecar
 
