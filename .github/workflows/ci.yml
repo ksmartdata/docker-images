@@ -5,11 +5,26 @@ on:
       - main
 
 jobs:
+  get-targets:
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.set-targets.outputs.targets }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Get image directories
+        id: set-targets
+        run: |
+          TARGETS=$(ls -d images/*/ | cut -d'/' -f2 | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "targets=$TARGETS" >> $GITHUB_OUTPUT
+          echo "Found targets: $TARGETS"
+
   build-and-scan:
+    needs: get-targets
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: ["rocketmq-exporter", "rclone-mongo", "mysqld-exporter", "percona-toolkit", "mysql-operator-sidecar-5.7"]
+        target: ${{ fromJson(needs.get-targets.outputs.targets) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
