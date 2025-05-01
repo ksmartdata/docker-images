@@ -49,7 +49,7 @@ jobs:
 
       - name: Build for test multi-platform
         if: steps.check-changes.outputs.has_changes == 'true'
-        uses: docker/build-push-action@v6.15.0
+        uses: docker/build-push-action@v6.16.0
         with:
           context: ./images/${{ matrix.target }}
           file: ./images/${{ matrix.target }}/Dockerfile
@@ -61,7 +61,7 @@ jobs:
 
       - name: Build for scan vulnerabilities
         if: steps.check-changes.outputs.has_changes == 'true'
-        uses: docker/build-push-action@v6.15.0
+        uses: docker/build-push-action@v6.16.0
         with:
           context: ./images/${{ matrix.target }}
           file: ./images/${{ matrix.target }}/Dockerfile
