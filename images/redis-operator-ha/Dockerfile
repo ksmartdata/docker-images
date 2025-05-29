@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.20-alpine AS build
+FROM --platform=$BUILDPLATFORM golang:1.23.9-alpine3.21 AS build
 RUN apk --no-cache add \
   bash \
   unzip
