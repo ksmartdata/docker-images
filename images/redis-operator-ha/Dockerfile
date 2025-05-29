@@ -3,8 +3,7 @@ RUN apk --no-cache add \
   bash
 
 WORKDIR /src
-# curl from branch named package
-RUN curl -Lo redis-operator-ha.zip https://github.com/ksmartdata/redis-operator-ha/archive/refs/heads/package.zip
+RUN wget https://github.com/ksmartdata/redis-operator-ha/archive/refs/heads/package.zip -O redis-operator-ha.zip
 RUN unzip redis-operator-ha.zip
 
 ARG TARGETOS 
