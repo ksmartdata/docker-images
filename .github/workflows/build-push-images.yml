@@ -10,6 +10,10 @@ on:
         description: 'tag'
         required: true
         type: string
+      build-args:
+        description: 'build args'
+        required: false
+        type: string
 
 env:
   ONLINE_REGISTER: ghcr.io/ksmartdata
@@ -43,5 +47,6 @@ jobs:
           platforms: ${{ env.BUILD_PLATFORM }}
           tags: ${{ env.ONLINE_REGISTER }}/${{ inputs.job }}:${{ inputs.tag }}
           cache-from: type=gha
+          build-args: ${{ inputs.build-args }}
           cache-to: type=gha,mode=max
           outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=Build from ${{ github.ref }} ${{ github.sha }}
