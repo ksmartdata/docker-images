@@ -39,3 +39,11 @@ vulnerabilities:
     paths:
       - "build/percona-toolkit-3.x/util/mysql_random_data_load"
     statement: "only used in test"
+
+  - id: CVE-2020-15999
+
+  - id: CVE-2019-12900
+
+  - id: CVE-2019-14697
+
+  - id: CVE-2019-8457  
