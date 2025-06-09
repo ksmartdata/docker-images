@@ -22,7 +22,7 @@ RUN apk add --no-cache bash gettext nmap-ncat openssl busybox-extras tzdata
 ENV TZ=Asia/Shanghai
 RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime
 
-ARG version
+ARG version=5.3.3
 
 # Rocketmq version
 ENV ROCKETMQ_VERSION=${version}
