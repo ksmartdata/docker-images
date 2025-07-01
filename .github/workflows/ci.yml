@@ -73,7 +73,7 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Scan image vulnerabilities
         if: steps.check-changes.outputs.has_changes == 'true'
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@0.31.0
         with:
           image-ref: ghcr.io/ksmartdata/${{ matrix.target }}:ci
           format: 'table'
