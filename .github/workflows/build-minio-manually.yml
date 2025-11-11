@@ -1,4 +1,4 @@
-name: build-specified-image-manually
+name: build-minio-manually
 
 on:
   workflow_dispatch:

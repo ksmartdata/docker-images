@@ -1,4 +1,4 @@
-name: daily-job
+name: build-minio-daily-auto
 on:
   schedule:
     - cron: '30 8 * * *'   # 08:30
@@ -31,6 +31,6 @@ jobs:
             curl -s -X POST \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer $GH_TOKEN" \
-              https://api.github.com/repos/$REPO/actions/workflows/build-specified-image-manually.yml/dispatches \
+              https://api.github.com/repos/$REPO/actions/workflows/build-minio-manually.yml/dispatches \
               -d "{\"ref\":\"main\",\"inputs\":{\"tag\":\"$tag\"}}"
           done < /tmp/daily-job.txt
