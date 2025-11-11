@@ -64,19 +64,19 @@ func getAllMinioReleasesUntilLast(repo, dateStr string) ([]string, error) {
 			return nil, maybeTheLastError
 		}
 		if resCode != http.StatusOK {
-			return nil, fmt.Errorf("status code is not %d", resCode)
+			return nil, fmt.Errorf("status code is %d", resCode)
 		}
 		for _, item := range releases {
-			tmp, err := parseDateStr(item.PublishedAt)
+			tagNameTimestamp, err := parseDateStr(item.TagName)
 			if err != nil {
 				log.Printf("'%s' parse error: %s", item.PublishedAt, err)
 				continue
 			}
-			result = append(result, item.TagName)
-			// The first one that is earlier than the input date is the release we need.
-			if tmp <= inputDateUnix {
+			if tagNameTimestamp <= inputDateUnix {
 				return result, nil
 			}
+			// The first one that is earlier than the input date is the release we need.
+			result = append(result, item.TagName)
 		}
 		startPage += maxPerPage
 	}

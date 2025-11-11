@@ -70,7 +70,7 @@ func runManuallyBuildImage(s string) {
 	if err != nil {
 		log.Fatalf("❌ get the mc version closest to the release date of MinIO version %s failed: %s", s, err.Error())
 	}
-	log.Printf("✅ found the tag name: %s, write to /tmp/mc.txt", tagName)
+	log.Printf("✅ found the mc's tag name: %s, write to /tmp/mc.txt", tagName)
 	err = os.WriteFile("/tmp/mc.txt", []byte(tagName), 0644)
 	if err != nil {
 		panic(err)
@@ -86,7 +86,7 @@ func checkMinioTagExists(tagName string) error {
 	}
 	resCode := res.StatusCode()
 	if resCode != http.StatusOK {
-		return fmt.Errorf("status code is not %d", http.StatusOK)
+		return fmt.Errorf("status code is %d", resCode)
 	}
 	return nil
 }
@@ -112,16 +112,16 @@ func getReleaseByDate(repo, dateStr string) (string, error) {
 			return "", maybeTheLastError
 		}
 		if resCode != http.StatusOK {
-			return "", fmt.Errorf("status code is not %d", resCode)
+			return "", fmt.Errorf("status code is %d", resCode)
 		}
 		for _, item := range releases {
-			tmp, err := parseDateStr(item.PublishedAt)
+			tagNameTimestamp, err := parseDateStr(convertReleaseStr(item.TagName))
 			if err != nil {
 				log.Printf("❌ '%s' parse error: %s", item.PublishedAt, err)
 				continue
 			}
 			// The first one that is earlier than the input date is the release we need.
-			if tmp <= inputDateUnix {
+			if tagNameTimestamp <= inputDateUnix {
 				return item.TagName, nil
 			}
 		}
