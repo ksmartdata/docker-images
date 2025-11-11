@@ -88,7 +88,7 @@ func getAllPublishedImageTagsInGhcr() ([]string, error) {
 	if token == "" {
 		log.Fatal("❌ GH_TOKEN environment variable is not set")
 	}
-	url := "https://api.github.com/users/usernameisnull/packages/container/minio/versions?per_page=%d&page=%d"
+	url := "https://api.github.com/orgs/ksmartdata/packages/container/minio/versions?per_page=100&page=1"
 	startPage := initPage
 	res := []string{}
 	for {
@@ -102,6 +102,9 @@ func getAllPublishedImageTagsInGhcr() ([]string, error) {
 		}
 		resCode := response.StatusCode()
 		if resCode != http.StatusOK {
+			if resCode == http.StatusNotFound {
+				return res, nil
+			}
 			return nil, fmt.Errorf("status code is %d", resCode)
 		}
 		if len(ghchImages) == 0 {
