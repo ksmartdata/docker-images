@@ -22,7 +22,7 @@ jobs:
         with:
           go-version: '1.24'
       - name: Find all images to build
-        run: go run . -daily_job
+        run: cd images/minio && go run . -daily_job
 
       - name: invoke build-manually pipeline
         run: |
