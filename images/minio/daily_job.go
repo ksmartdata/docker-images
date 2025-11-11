@@ -67,7 +67,7 @@ func getAllMinioReleasesUntilLast(repo, dateStr string) ([]string, error) {
 			return nil, fmt.Errorf("status code is %d", resCode)
 		}
 		for _, item := range releases {
-			tagNameTimestamp, err := parseDateStr(item.TagName)
+			tagNameTimestamp, err := parseDateStr(convertReleaseStr(item.TagName))
 			if err != nil {
 				log.Printf("'%s' parse error: %s", item.PublishedAt, err)
 				continue
