@@ -1,0 +1,45 @@
+FROM golang:1.24-alpine AS build
+# download-static-curl.sh need this ENV
+ARG TARGETARCH
+# github will automantically set TARGETARCH
+ENV TARGETARCH=${TARGETARCH}
+ARG MINIO_VERSION=RELEASE.2024-06-01T00-00-00Z
+ENV MINIO_VERSION=${MINIO_VERSION}
+#ENV GOPROXY=https://goproxy.cn,direct
+
+WORKDIR /build-minio-image
+#RUN sed -i 's|https://dl-cdn.alpinelinux.org/alpine|https://mirrors.tuna.tsinghua.edu.cn/alpine|g' /etc/apk/repositories
+RUN apk update  && \
+    apk add -U --no-cache git openssh ca-certificates curl bash
+COPY . .
+RUN chmod +x build.sh && bash build.sh
+RUN mkdir -p /build && \
+    cp /tmp/minio/dockerscripts/download-static-curl.sh /build/download-static-curl && \
+    chmod +x /build/download-static-curl && \
+    /build/download-static-curl
+
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:latest
+
+ENV MINIO_ACCESS_KEY_FILE=access_key \
+    MINIO_SECRET_KEY_FILE=secret_key \
+    MINIO_ROOT_USER_FILE=access_key \
+    MINIO_ROOT_PASSWORD_FILE=secret_key \
+    MINIO_KMS_SECRET_KEY_FILE=kms_master_key \
+    MINIO_CONFIG_ENV_FILE=config.env \
+    MC_CONFIG_DIR=/tmp/.mc
+
+RUN chmod -R 777 /usr/bin
+
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build /tmp/build/minio* /usr/bin/
+COPY --from=build /tmp/build/mc* /usr/bin/
+COPY --from=build /go/bin/curl* /usr/bin/
+COPY --from=build /tmp/minio/dockerscripts/docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+RUN chmod +x /usr/bin/docker-entrypoint.sh
+
+EXPOSE 9000
+VOLUME ["/data"]
+
+ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
+CMD ["minio"]
