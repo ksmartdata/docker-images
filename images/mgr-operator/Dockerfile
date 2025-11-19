@@ -3,7 +3,7 @@ FROM alpine:3.22.2 AS downloader
 
 WORKDIR /tmp
 RUN wget https://github.com/ksmartdata/mgr-operator/archive/refs/heads/package.zip -O mgr-operator.zip && \
-    unzip mgr-operator.zip \
+    unzip mgr-operator.zip
 
 RUN wget https://github.com/ksmartdata/mysql-operator/archive/refs/heads/extra_image.zip -O extra_image.zip && \
     unzip extra_image.zip
