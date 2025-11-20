@@ -7,18 +7,17 @@ RUN wget https://github.com/ksmartdata/mgr-operator/archive/refs/heads/package.z
 
 RUN wget https://github.com/ksmartdata/mysql-operator/archive/refs/heads/extra_image.zip -O extra_image.zip && \
     unzip extra_image.zip
-RUN ls /tmp/mgr-operator-package
-RUN ls /tmp/mysql-operator-extra_image
 
-FROM golang:1.23.3 AS builder
+FROM golang:1.23.3-alpine AS builder
+USER root
 COPY --from=downloader /tmp/mysql-operator-extra_image/images/mgr-diagnose/ /mgr-diagnose/
 WORKDIR /mgr-diagnose
 RUN go mod tidy
-RUN CGO_ENABLED=0 go build -o /usr/local/bin/diagnose daocloud.io/mcamel/mgr-diagnose
+RUN CGO_ENABLED=0 go build -ldflags "-w -s" -o /usr/local/bin/diagnose daocloud.io/mcamel/mgr-diagnose
+RUN chmod +x /usr/local/bin/diagnose
 
 
 FROM container-registry.oracle.com/mysql/community-operator:${BASE_VERSION}
 ARG BASE_VERSION
 COPY --from=downloader /tmp/mgr-operator-package/mysqloperator/ /usr/lib/mysqlsh/python-packages/mysqloperator/
 COPY --from=builder /usr/local/bin/diagnose /usr/local/bin/diagnose
-RUN chmod +x /usr/local/bin/diagnose
