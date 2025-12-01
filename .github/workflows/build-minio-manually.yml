@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.DAOCLOUD_HARBOR_TOKEN }}
 
       - name: Build and Push Multi-Arch Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./images/minio
           file: ./images/minio/Dockerfile.release
