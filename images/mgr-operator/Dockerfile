@@ -7,7 +7,7 @@ RUN wget -q https://github.com/ksmartdata/mgr-operator/archive/refs/heads/packag
     wget -q https://github.com/ksmartdata/mysql-operator/archive/refs/heads/extra_image.zip -O extra_image.zip && \
     unzip -q extra_image.zip
 
-FROM golang:1.23.3-alpine AS builder
+FROM --platform=$TARGETPLATFORM golang:1.23.3-alpine AS builder
 USER root
 WORKDIR /mgr-diagnose
 COPY --from=downloader /tmp/mysql-operator-extra_image/images/mgr-diagnose/go.mod ./
@@ -18,7 +18,8 @@ COPY --from=downloader /tmp/mysql-operator-extra_image/images/mgr-diagnose/ /mgr
 RUN go mod tidy
 RUN CGO_ENABLED=0 go build -trimpath -ldflags "-w -s" -o /usr/local/bin/diagnose daocloud.io/mcamel/mgr-diagnose
 
-FROM container-registry.oracle.com/mysql/community-operator:${BASE_VERSION}
+# Set base image according to platform architecture
+FROM --platform=$TARGETPLATFORM container-registry.oracle.com/mysql/community-operator:${BASE_VERSION}${TARGETARCH:+-aarch64}
 ARG BASE_VERSION
 COPY --from=downloader /tmp/mgr-operator-package/mysqloperator/ /usr/lib/mysqlsh/python-packages/mysqloperator/
 COPY --from=builder /usr/local/bin/diagnose /usr/local/bin/diagnose
