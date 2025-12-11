@@ -18,7 +18,6 @@ COPY --from=downloader /tmp/mysql-operator-extra_image/images/mgr-diagnose/ /mgr
 RUN go mod tidy
 RUN CGO_ENABLED=0 go build -trimpath -ldflags "-w -s" -o /usr/local/bin/diagnose daocloud.io/mcamel/mgr-diagnose
 
-# Set base image according to platform architecture
 FROM --platform=$TARGETPLATFORM ghcr.io/ksmartdata/community-operator:${BASE_VERSION}
 ARG BASE_VERSION
 COPY --from=downloader /tmp/mgr-operator-package/mysqloperator/ /usr/lib/mysqlsh/python-packages/mysqloperator/
