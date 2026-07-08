@@ -15,6 +15,14 @@ on:
         description: 'build args'
         required: false
         type: string
+      context:
+        description: 'docker build context, defaults to ./images/<job>'
+        required: false
+        type: string
+      dockerfile:
+        description: 'dockerfile path, defaults to ./images/<job>/Dockerfile'
+        required: false
+        type: string
 
 env:
   ONLINE_REGISTER: ghcr.io/ksmartdata
@@ -41,8 +49,8 @@ jobs:
       - name: Build && Push
         uses: docker/build-push-action@v6.18.0
         with:
-          context: ./images/${{ inputs.job }}
-          file: ./images/${{ inputs.job }}/Dockerfile
+          context: ${{ inputs.context || format('./images/{0}', inputs.job) }}
+          file: ${{ inputs.dockerfile || format('./images/{0}/Dockerfile', inputs.job) }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           push: true
           platforms: ${{ env.BUILD_PLATFORM }}
