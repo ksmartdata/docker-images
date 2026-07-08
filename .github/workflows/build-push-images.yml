@@ -1,4 +1,5 @@
 name: Build and Push Images
+run-name: Build ${{ inputs.job }}:${{ inputs.tag }} by @${{ github.actor }}
 on:
   workflow_dispatch:
     inputs:
