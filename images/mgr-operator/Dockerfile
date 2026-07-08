@@ -27,9 +27,4 @@ ARG BASE_VERSION
 ARG BASE_IMAGE_REPOSITORY
 COPY --from=downloader /tmp/mgr-operator-src/mysqloperator/ /usr/lib/mysqlsh/python-packages/mysqloperator/
 COPY --from=builder /usr/local/bin/diagnose /usr/local/bin/diagnose
-# 1.35.4.post1是为来修复在报429的情况下operator不重试的bug，因为mgr-operator因为依赖特定版本的python没有办法用新版本的kopf
-# 所以在特定版本的kopf上修改了kopf的代码来修复这个问题
-USER root
-RUN pip3 uninstall -y kopf && \
-    pip3 install kopf-retry-after==1.35.4.post1
 USER 2
