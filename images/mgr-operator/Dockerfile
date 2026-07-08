@@ -12,7 +12,7 @@ RUN wget -q "https://github.com/ksmartdata/mgr-operator/archive/${MGR_OPERATOR_R
     unzip -q extra_image.zip && \
     mv mysql-operator-* mysql-operator-src
 
-FROM --platform=$TARGETPLATFORM golang:1.23.3-alpine AS builder
+FROM golang:1.24.13-alpine AS builder
 USER root
 WORKDIR /mgr-diagnose
 COPY --from=downloader /tmp/mysql-operator-src/images/mgr-diagnose/go.mod ./
@@ -22,7 +22,7 @@ RUN go mod download
 COPY --from=downloader /tmp/mysql-operator-src/images/mgr-diagnose/ /mgr-diagnose/
 RUN CGO_ENABLED=0 go build -trimpath -ldflags "-w -s" -o /usr/local/bin/diagnose daocloud.io/mcamel/mgr-diagnose
 
-FROM --platform=$TARGETPLATFORM ${BASE_IMAGE_REPOSITORY}:${BASE_VERSION}
+FROM ${BASE_IMAGE_REPOSITORY}:${BASE_VERSION}
 ARG BASE_VERSION
 ARG BASE_IMAGE_REPOSITORY
 COPY --from=downloader /tmp/mgr-operator-src/mysqloperator/ /usr/lib/mysqlsh/python-packages/mysqloperator/
