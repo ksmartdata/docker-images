@@ -28,6 +28,10 @@ env:
   ONLINE_REGISTER: ghcr.io/ksmartdata
   BUILD_PLATFORM: linux/amd64,linux/arm64
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   common-build-and-push:
     if: ${{ inputs.job != 'community-server' && inputs.job != 'community-router' }}
