@@ -30,6 +30,7 @@ env:
 
 jobs:
   common-build-and-push:
+    if: ${{ inputs.job != 'community-server' && inputs.job != 'community-router' }}
     runs-on: ubuntu-latest
     steps:
       - name: Git clone repo
@@ -59,3 +60,45 @@ jobs:
           build-args: ${{ inputs.build-args }}
           cache-to: type=gha,mode=max
           outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=Build from ${{ github.ref }} ${{ github.sha }}
+
+  copy-mysql-community-images:
+    if: ${{ inputs.job == 'community-server' || inputs.job == 'community-router' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy arch images
+        run: |
+          source_repository="container-registry.oracle.com/mysql/${{ inputs.job }}"
+          target_repository="${{ env.ONLINE_REGISTER }}/${{ inputs.job }}"
+
+          docker pull --platform linux/amd64 "${source_repository}:${{ inputs.tag }}"
+          docker pull --platform linux/arm64 "${source_repository}:${{ inputs.tag }}-aarch64"
+
+          docker tag "${source_repository}:${{ inputs.tag }}" "${target_repository}:${{ inputs.tag }}-amd64"
+          docker tag "${source_repository}:${{ inputs.tag }}-aarch64" "${target_repository}:${{ inputs.tag }}-arm64"
+
+          docker push "${target_repository}:${{ inputs.tag }}-amd64"
+          docker push "${target_repository}:${{ inputs.tag }}-arm64"
+
+      - name: Create and push manifest image
+        run: |
+          target_repository="${{ env.ONLINE_REGISTER }}/${{ inputs.job }}"
+          target_image="${target_repository}:${{ inputs.tag }}"
+
+          docker manifest rm "${target_image}" || true
+          docker manifest create \
+            "${target_image}" \
+            "${target_repository}:${{ inputs.tag }}-amd64" \
+            "${target_repository}:${{ inputs.tag }}-arm64"
+          docker manifest annotate "${target_image}" "${target_repository}:${{ inputs.tag }}-amd64" --os linux --arch amd64
+          docker manifest annotate "${target_image}" "${target_repository}:${{ inputs.tag }}-arm64" --os linux --arch arm64
+          docker manifest push "${target_image}"
+
+      - name: Inspect manifest image
+        run: docker manifest inspect "${{ env.ONLINE_REGISTER }}/${{ inputs.job }}:${{ inputs.tag }}"
