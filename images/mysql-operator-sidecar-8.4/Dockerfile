@@ -13,10 +13,10 @@ FROM --platform=$TARGETPLATFORM golang:1.21 AS builder
 
 ARG OPERATOR_REF=extra_image
 
-WORKDIR /build
-RUN wget -nv -O src.zip https://github.com/ksmartdata/mysql-operator/archive/refs/heads/${OPERATOR_REF}.zip \
-    && unzip -q src.zip && rm src.zip
-WORKDIR /build/mysql-operator-${OPERATOR_REF}
+# git is bundled with the golang image (wget/unzip are not)
+RUN git clone --depth 1 --branch ${OPERATOR_REF} \
+      https://github.com/ksmartdata/mysql-operator.git /build/mysql-operator
+WORKDIR /build/mysql-operator
 RUN CGO_ENABLED=0 go build -o /mysql-operator-sidecar ./cmd/mysql-operator-sidecar
 
 # runtime: EL9 (matches Percona's own PXB 8.4 image base)
