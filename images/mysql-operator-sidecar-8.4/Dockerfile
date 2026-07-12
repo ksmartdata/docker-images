@@ -32,12 +32,25 @@ RUN groupadd -o -g 999 mysql \
 COPY rootfs/ /
 
 # percona-xtrabackup-84 provides xtrabackup, xbstream and xbcloud;
-# gzip is invoked by the sidecar backup/candidate streams
+# gzip is invoked by the sidecar backup/candidate streams;
+# perl-DBI/perl-DBD-mysql are the runtime of the percona-toolkit scripts below
 RUN dnf install -y https://repo.percona.com/yum/percona-release-latest.noarch.rpm \
     && percona-release enable pxb-84-lts release \
-    && dnf install -y percona-xtrabackup-84 gzip unzip \
+    && dnf install -y percona-xtrabackup-84 gzip unzip perl perl-DBI perl-DBD-mysql \
     && dnf clean all \
     && rm -rf /var/cache/dnf
+
+# pt-heartbeat / pt-kill: the operator runs both as extra pod containers off
+# this same sidecar image. Percona ships no aarch64 EL9 percona-toolkit rpm,
+# but these two tools are pure Perl scripts - take them from the pinned
+# release tarball instead of the arch-gated package
+ARG PERCONA_TOOLKIT_VERSION=v3.7.1
+RUN curl -fsSL https://github.com/percona/percona-toolkit/archive/refs/tags/${PERCONA_TOOLKIT_VERSION}.tar.gz \
+      | tar -xz -C /tmp \
+    && install -m 755 /tmp/percona-toolkit-*/bin/pt-heartbeat /tmp/percona-toolkit-*/bin/pt-kill /usr/local/bin/ \
+    && rm -rf /tmp/percona-toolkit-* \
+    && pt-heartbeat --version \
+    && pt-kill --version
 
 # rclone via the official arch-aware installer
 RUN curl -fsSL https://rclone.org/install.sh | bash \
