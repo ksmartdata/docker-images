@@ -8,8 +8,10 @@
 #  xtrabackup 8.0 cannot back up MySQL 8.4 servers, hence the new image.
 ###############################################################################
 
-# build mysql-operator-sidecar from the operator fork
-FROM --platform=$TARGETPLATFORM golang:1.21 AS builder
+# build mysql-operator-sidecar from the operator fork; the Go version also
+# pins the stdlib compiled into the binary - keep it current or the trivy
+# CRITICAL gate rejects the image (the module itself builds fine on new Go)
+FROM --platform=$TARGETPLATFORM golang:1.26-bookworm AS builder
 
 ARG OPERATOR_REF=extra_image
 
