@@ -22,8 +22,10 @@ RUN CGO_ENABLED=0 go build -o /mysql-operator-sidecar ./cmd/mysql-operator-sidec
 # runtime: EL9 (matches Percona's own PXB 8.4 image base)
 FROM --platform=$TARGETPLATFORM oraclelinux:9
 
-RUN groupadd -g 999 mysql \
-    && useradd -u 999 -r -g 999 -s /sbin/nologin -c "Default Application User" mysql
+# -o: uid/gid 999 must match the other sidecar images (the operator runs the
+# pod with this identity), but EL9 already assigns 999 to a system account
+RUN groupadd -o -g 999 mysql \
+    && useradd -o -u 999 -r -g 999 -s /sbin/nologin -c "Default Application User" mysql
 
 COPY rootfs/ /
 
