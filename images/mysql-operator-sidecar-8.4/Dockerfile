@@ -16,8 +16,8 @@ FROM --platform=$TARGETPLATFORM golang:1.26-bookworm AS builder
 # Release convention: tag the mysql-operator repo first (e.g. v0.8.0), then
 # dispatch the build with build-args OPERATOR_REF=<that tag> so the sidecar
 # binary is pinned to an exact commit (git clone --branch accepts tags).
-# The default only exists for ad-hoc builds and floats with the branch head.
-ARG OPERATOR_REF=extra_image
+# The default is pinned to the latest release tag; bump it per release.
+ARG OPERATOR_REF=v0.8.0
 
 # git is bundled with the golang image (wget/unzip are not)
 RUN git clone --depth 1 --branch ${OPERATOR_REF} \
@@ -62,7 +62,7 @@ RUN curl -fsSL https://rclone.org/install.sh | bash \
 
 # re-declared so the builder-stage ARG is visible here; records which
 # mysql-operator ref the embedded sidecar binary was built from
-ARG OPERATOR_REF=extra_image
+ARG OPERATOR_REF=v0.8.0
 LABEL io.ksmartdata.operator-ref=${OPERATOR_REF}
 
 COPY --from=builder /mysql-operator-sidecar /usr/local/bin/mysql-operator-sidecar

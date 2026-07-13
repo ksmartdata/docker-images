@@ -8,11 +8,15 @@ RUN apt install -y wget gcc unzip
 ENV GOPROXY=https://goproxy.cn
 ENV GOPATH=/build
 
+# pinned mysql-operator ref (tag or commit - repo policy forbids pulling
+# from branch heads); bump via build-args when cutting a new release
+ARG OPERATOR_REF=v0.8.0
+
 # build mysql-operator-sidecar
 WORKDIR /build
-RUN wget -O arm64.zip https://github.com/ksmartdata/mysql-operator/archive/refs/heads/extra_image.zip
-RUN unzip arm64.zip
-WORKDIR /build/mysql-operator-extra_image
+RUN wget -O src.zip https://github.com/ksmartdata/mysql-operator/archive/${OPERATOR_REF}.zip
+RUN unzip src.zip && mv mysql-operator-* mysql-operator-src
+WORKDIR /build/mysql-operator-src
 RUN go mod tidy
 RUN CGO_ENABLED=0 go build  -o /mysql-operator-sidecar  cmd/mysql-operator-sidecar/main.go
 
