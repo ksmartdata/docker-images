@@ -1,4 +1,6 @@
-FROM --platform=$TARGETPLATFORM golang:1.21.11 as builder
+# keep the Go version current: the stdlib compiled into the sidecar binary
+# is what the trivy CRITICAL gate scans (see the 8.4 image)
+FROM --platform=$TARGETPLATFORM golang:1.26-bookworm as builder
 
 USER root
 
