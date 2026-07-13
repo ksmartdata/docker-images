@@ -13,6 +13,10 @@
 # CRITICAL gate rejects the image (the module itself builds fine on new Go)
 FROM --platform=$TARGETPLATFORM golang:1.26-bookworm AS builder
 
+# Release convention: tag the mysql-operator repo first (e.g. v0.8.0), then
+# dispatch the build with build-args OPERATOR_REF=<that tag> so the sidecar
+# binary is pinned to an exact commit (git clone --branch accepts tags).
+# The default only exists for ad-hoc builds and floats with the branch head.
 ARG OPERATOR_REF=extra_image
 
 # git is bundled with the golang image (wget/unzip are not)
@@ -55,6 +59,11 @@ RUN curl -fsSL https://github.com/percona/percona-toolkit/archive/refs/tags/${PE
 # rclone via the official arch-aware installer
 RUN curl -fsSL https://rclone.org/install.sh | bash \
     && rclone version
+
+# re-declared so the builder-stage ARG is visible here; records which
+# mysql-operator ref the embedded sidecar binary was built from
+ARG OPERATOR_REF=extra_image
+LABEL io.ksmartdata.operator-ref=${OPERATOR_REF}
 
 COPY --from=builder /mysql-operator-sidecar /usr/local/bin/mysql-operator-sidecar
 RUN chmod 755 /usr/local/bin/mysql-operator-sidecar /usr/local/bin/docker-entrypoint.sh \

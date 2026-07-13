@@ -60,6 +60,9 @@ jobs:
           push: true
           platforms: ${{ env.BUILD_PLATFORM }}
           tags: ${{ env.ONLINE_REGISTER }}/${{ inputs.job }}:${{ inputs.tag }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/ksmartdata/docker-images
+            org.opencontainers.image.revision=${{ github.sha }}
           cache-from: type=gha
           build-args: ${{ inputs.build-args }}
           cache-to: type=gha,mode=max
