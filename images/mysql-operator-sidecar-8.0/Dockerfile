@@ -27,6 +27,9 @@ RUN curl https://rclone.org/install.sh | bash
 
 FROM --platform=$TARGETPLATFORM ghcr.io/ksmartdata/mysql-operator-sidecar-8.0:v0.7.4
 USER root
+# the v0.7.4 base ships a full Go toolchain at /usr/local/go; a runtime
+# image needs no compiler and trivy gates on its stale stdlib CVEs
+RUN rm -rf /usr/local/go
 COPY --from=builder /mysql-operator-sidecar /usr/local/bin/
 COPY --from=builder /usr/bin/rclone /usr/local/bin/
 RUN chmod +x /usr/local/bin/mysql-operator-sidecar
