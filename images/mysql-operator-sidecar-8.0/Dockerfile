@@ -1,4 +1,6 @@
-FROM --platform=$TARGETPLATFORM golang:1.21.11 as builder
+# keep the Go version current: the stdlib compiled into the sidecar binary
+# is what the trivy CRITICAL gate scans (see the 8.4 image)
+FROM --platform=$TARGETPLATFORM golang:1.26-bookworm as builder
 
 USER root
 
@@ -8,11 +10,15 @@ RUN apt install -y wget gcc unzip
 ENV GOPROXY=https://goproxy.cn
 ENV GOPATH=/build
 
+# pinned mysql-operator ref (tag or commit - repo policy forbids pulling
+# from branch heads); bump via build-args when cutting a new release
+ARG OPERATOR_REF=v0.8.0
+
 # build mysql-operator-sidecar
 WORKDIR /build
-RUN wget -O arm64.zip https://github.com/ksmartdata/mysql-operator/archive/refs/heads/extra_image.zip
-RUN unzip arm64.zip
-WORKDIR /build/mysql-operator-extra_image
+RUN wget -O src.zip https://github.com/ksmartdata/mysql-operator/archive/${OPERATOR_REF}.zip
+RUN unzip src.zip && mv mysql-operator-* mysql-operator-src
+WORKDIR /build/mysql-operator-src
 RUN go mod tidy
 RUN CGO_ENABLED=0 go build  -o /mysql-operator-sidecar  cmd/mysql-operator-sidecar/main.go
 
@@ -21,6 +27,9 @@ RUN curl https://rclone.org/install.sh | bash
 
 FROM --platform=$TARGETPLATFORM ghcr.io/ksmartdata/mysql-operator-sidecar-8.0:v0.7.4
 USER root
+# the v0.7.4 base ships a full Go toolchain at /usr/local/go; a runtime
+# image needs no compiler and trivy gates on its stale stdlib CVEs
+RUN rm -rf /usr/local/go
 COPY --from=builder /mysql-operator-sidecar /usr/local/bin/
 COPY --from=builder /usr/bin/rclone /usr/local/bin/
 RUN chmod +x /usr/local/bin/mysql-operator-sidecar

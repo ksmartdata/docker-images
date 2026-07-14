@@ -3,13 +3,13 @@ ARG BASE_IMAGE_REPOSITORY=ghcr.io/ksmartdata/community-operator
 FROM alpine:3.22.2 AS downloader
 
 ARG MGR_OPERATOR_REF=package
-ARG MYSQL_OPERATOR_EXTRA_IMAGE_REF=extra_image
+ARG MYSQL_OPERATOR_EXTRA_IMAGE_REF=v0.8.0
 WORKDIR /tmp
 RUN wget -q "https://github.com/ksmartdata/mgr-operator/archive/${MGR_OPERATOR_REF}.zip" -O mgr-operator.zip && \
     unzip -q mgr-operator.zip && \
     mv mgr-operator-* mgr-operator-src && \
-    wget -q "https://github.com/ksmartdata/mysql-operator/archive/${MYSQL_OPERATOR_EXTRA_IMAGE_REF}.zip" -O extra_image.zip && \
-    unzip -q extra_image.zip && \
+    wget -q "https://github.com/ksmartdata/mysql-operator/archive/${MYSQL_OPERATOR_EXTRA_IMAGE_REF}.zip" -O mysql-operator.zip && \
+    unzip -q mysql-operator.zip && \
     mv mysql-operator-* mysql-operator-src
 
 FROM golang:1.24.13-alpine AS builder

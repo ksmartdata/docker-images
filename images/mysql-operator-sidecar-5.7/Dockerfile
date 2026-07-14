@@ -1,4 +1,6 @@
-FROM --platform=$TARGETPLATFORM golang:1.21.11 as builder
+# keep the Go version current: the stdlib compiled into the sidecar binary
+# is what the trivy CRITICAL gate scans (see the 8.4 image)
+FROM --platform=$TARGETPLATFORM golang:1.26-bookworm as builder
 
 USER root
 
@@ -8,11 +10,15 @@ RUN apt update -y && \
 ENV GOPROXY=https://goproxy.cn
 ENV GOPATH=/build
 
+# pinned mysql-operator ref (tag or commit - repo policy forbids pulling
+# from branch heads); bump via build-args when cutting a new release
+ARG OPERATOR_REF=v0.8.0
+
 # build mysql-operator-sidecar
 WORKDIR /build
-RUN wget -O extra_image.zip https://github.com/ksmartdata/mysql-operator/archive/refs/heads/extra_image.zip
-RUN unzip extra_image.zip
-WORKDIR /build/mysql-operator-extra_image
+RUN wget -O src.zip https://github.com/ksmartdata/mysql-operator/archive/${OPERATOR_REF}.zip
+RUN unzip src.zip && mv mysql-operator-* mysql-operator-src
+WORKDIR /build/mysql-operator-src
 RUN go mod tidy
 RUN CGO_ENABLED=0 go build -o /mysql-operator-sidecar cmd/mysql-operator-sidecar/main.go
 
