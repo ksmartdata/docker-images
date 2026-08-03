@@ -8,7 +8,7 @@ RUN curl -Lo rocketmq-exporter.zip https://github.com/apache/rocketmq-exporter/a
 
 RUN unzip rocketmq-exporter.zip
 
-RUN cd rocketmq-exporter-${ROCKETMQ_EXPORTER_VERSION} && mvn clean package -Dmaven.test.skip=truedocker
+RUN cd rocketmq-exporter-${ROCKETMQ_EXPORTER_VERSION} && mvn clean package -Dmaven.test.skip=true
 
 FROM --platform=$TARGETPLATFORM eclipse-temurin:8-jre
 
@@ -18,4 +18,4 @@ COPY --from=builder /rocketmq-exporter-*/target/*-SNAPSHOT-exec.jar /rocketmq-ex
 
 EXPOSE 5557
 
-ENTRYPOINT ["java","-jar","rocketmq-exporter.jar"]
+ENTRYPOINT ["java","-Dfastjson.parser.safeMode=true","-jar","rocketmq-exporter.jar"]
