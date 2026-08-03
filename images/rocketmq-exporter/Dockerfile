@@ -8,7 +8,7 @@ RUN curl -Lo rocketmq-exporter.zip https://github.com/apache/rocketmq-exporter/a
 
 RUN unzip rocketmq-exporter.zip
 
-RUN cd rocketmq-exporter-${ROCKETMQ_EXPORTER_VERSION} && mvn clean package -Dmaven.test.skip=true
+RUN cd rocketmq-exporter-${ROCKETMQ_EXPORTER_VERSION} && mvn clean package -Dmaven.test.skip=true -Dtomcat.version=9.0.118
 
 FROM --platform=$TARGETPLATFORM eclipse-temurin:8-jre
 
