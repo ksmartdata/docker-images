@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-FROM --platform=$TARGETPLATFORM openjdk:8-alpine
+FROM --platform=$TARGETPLATFORM bellsoft/liberica-openjdk-alpine-musl:8
 
 RUN apk add --no-cache bash gettext nmap-ncat openssl busybox-extras tzdata
 # set default timezone
