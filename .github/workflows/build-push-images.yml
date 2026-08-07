@@ -52,7 +52,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.10.0
       - name: Build && Push
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6
         with:
           context: ${{ inputs.context || format('./images/{0}', inputs.job) }}
           file: ${{ inputs.dockerfile || format('./images/{0}/Dockerfile', inputs.job) }}
