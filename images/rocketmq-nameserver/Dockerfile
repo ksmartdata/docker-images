@@ -32,6 +32,10 @@ ENV ROCKETMQ_HOME=/root/rocketmq/nameserver
 
 WORKDIR  ${ROCKETMQ_HOME}
 
+# 4.3.2 的签名 key（duhengforever@apache.org，fpr B1BD9DB653F1B79C742839EA9087A12DD1BC4712）
+# 从未收录进官方 KEYS 文件，这里以仓库内文件补充导入；发行包已另经 archive 的 md5/sha1 双重核对
+COPY KEYS.duheng-4x /tmp/KEYS.duheng-4x
+
 # Install
 RUN set -eux; \
     apk add --virtual .build-deps curl gnupg unzip; \
@@ -39,6 +43,7 @@ RUN set -eux; \
     curl https://archive.apache.org/dist/rocketmq/${ROCKETMQ_VERSION}/rocketmq-all-${ROCKETMQ_VERSION}-bin-release.zip.asc -o rocketmq.zip.asc; \
 	curl -L https://www.apache.org/dist/rocketmq/KEYS -o KEYS; \
 	gpg --import KEYS; \
+	gpg --import /tmp/KEYS.duheng-4x; \
     gpg --batch --verify rocketmq.zip.asc rocketmq.zip; \
     unzip rocketmq.zip; \
 	mv rocketmq-all*/* . ; \

@@ -32,6 +32,9 @@ ENV ROCKETMQ_HOME=/root/rocketmq/broker
 
 WORKDIR  ${ROCKETMQ_HOME}
 
+# 4.3.2 的签名 key（duhengforever@apache.org）从未收录进官方 KEYS 文件，仓库内补充导入
+COPY KEYS.duheng-4x /tmp/KEYS.duheng-4x
+
 # Install
 RUN set -eux; \
     apk add --virtual .build-deps curl gnupg unzip; \
@@ -40,6 +43,7 @@ RUN set -eux; \
 	curl -L https://www.apache.org/dist/rocketmq/KEYS -o KEYS; \
 	\
 	gpg --import KEYS; \
+	gpg --import /tmp/KEYS.duheng-4x; \
     gpg --batch --verify rocketmq.zip.asc rocketmq.zip; \
     unzip rocketmq.zip; \
 	mv rocketmq-all*/* . ; \
