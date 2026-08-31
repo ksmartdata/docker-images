@@ -22,8 +22,22 @@ WORKDIR /build/mysql-operator-src
 RUN go mod tidy
 RUN CGO_ENABLED=0 go build  -o /mysql-operator-sidecar  cmd/mysql-operator-sidecar/main.go
 
-# install rclone
-RUN curl https://rclone.org/install.sh | bash
+# rclone: pinned instead of the upstream installer, so the binary in the
+# image is reproducible and the trivy CRITICAL gate has a version to name
+ARG TARGETARCH
+ARG RCLONE_RELEASE=1.74.3
+RUN target_arch="${TARGETARCH:-$(dpkg --print-architecture)}" \
+    && rclone_ver="${RCLONE_RELEASE#v}" \
+    && case "${target_arch}" in \
+        amd64) rclone_arch=amd64 ;; \
+        arm64) rclone_arch=arm64 ;; \
+        *) echo "Unsupported rclone architecture: ${target_arch}" >&2; exit 1 ;; \
+    esac \
+    && curl -fsSLo /tmp/rclone.zip "https://downloads.rclone.org/v${rclone_ver}/rclone-v${rclone_ver}-linux-${rclone_arch}.zip" \
+    && unzip -q /tmp/rclone.zip -d /tmp \
+    && install -m 755 "/tmp/rclone-v${rclone_ver}-linux-${rclone_arch}/rclone" /usr/bin/rclone \
+    && rclone version \
+    && rm -rf /tmp/rclone.zip "/tmp/rclone-v${rclone_ver}-linux-${rclone_arch}"
 
 FROM --platform=$TARGETPLATFORM ghcr.io/ksmartdata/mysql-operator-sidecar-8.0:v0.7.4
 USER root

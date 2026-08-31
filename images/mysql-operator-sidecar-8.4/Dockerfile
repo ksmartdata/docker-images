@@ -56,9 +56,22 @@ RUN curl -fsSL https://github.com/percona/percona-toolkit/archive/refs/tags/${PE
     && pt-heartbeat --version \
     && pt-kill --version
 
-# rclone via the official arch-aware installer
-RUN curl -fsSL https://rclone.org/install.sh | bash \
-    && rclone version
+# rclone: pinned instead of the upstream installer, so the binary in the
+# image is reproducible and the trivy CRITICAL gate has a version to name
+ARG TARGETARCH
+ARG RCLONE_RELEASE=1.74.3
+RUN target_arch="${TARGETARCH:-$(uname -m)}" \
+    && rclone_ver="${RCLONE_RELEASE#v}" \
+    && case "${target_arch}" in \
+        amd64|x86_64) rclone_arch=amd64 ;; \
+        arm64|aarch64) rclone_arch=arm64 ;; \
+        *) echo "Unsupported rclone architecture: ${target_arch}" >&2; exit 1 ;; \
+    esac \
+    && curl -fsSLo /tmp/rclone.zip "https://downloads.rclone.org/v${rclone_ver}/rclone-v${rclone_ver}-linux-${rclone_arch}.zip" \
+    && unzip -q /tmp/rclone.zip -d /tmp \
+    && install -m 755 "/tmp/rclone-v${rclone_ver}-linux-${rclone_arch}/rclone" /usr/local/bin/rclone \
+    && rclone version \
+    && rm -rf /tmp/rclone.zip "/tmp/rclone-v${rclone_ver}-linux-${rclone_arch}"
 
 # re-declared so the builder-stage ARG is visible here; records which
 # mysql-operator ref the embedded sidecar binary was built from
