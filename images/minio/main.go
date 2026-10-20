@@ -23,8 +23,7 @@ const (
 
 var (
 	// https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28#list-releases
-	// max page is 100
-	// Only the first 1000 results are available.
+	// per_page is capped at 100; page is a one-based page number.
 	repoURL                 = "https://api.github.com/repos/%s/releases?per_page=%d&page=%d"
 	maybeTheLastError error = errors.New("maybe the last page, return code: 422")
 	client                  = resty.New()
@@ -114,6 +113,9 @@ func getReleaseByDate(repo, dateStr string) (string, error) {
 		if resCode != http.StatusOK {
 			return "", fmt.Errorf("status code is %d", resCode)
 		}
+		if len(releases) == 0 {
+			return "", fmt.Errorf("no release found in %s at or before %s", repo, dateStr)
+		}
 		for _, item := range releases {
 			tagNameTimestamp, err := parseDateStr(convertReleaseStr(item.TagName))
 			if err != nil {
@@ -125,9 +127,8 @@ func getReleaseByDate(repo, dateStr string) (string, error) {
 				return item.TagName, nil
 			}
 		}
-		startPage += maxPerPage
+		startPage++
 	}
-	return "", nil
 }
 
 func parseDateStr(dateStr string) (int64, error) {

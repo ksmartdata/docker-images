@@ -66,6 +66,9 @@ func getAllMinioReleasesUntilLast(repo, dateStr string) ([]string, error) {
 		if resCode != http.StatusOK {
 			return nil, fmt.Errorf("status code is %d", resCode)
 		}
+		if len(releases) == 0 {
+			return result, nil
+		}
 		for _, item := range releases {
 			tagNameTimestamp, err := parseDateStr(convertReleaseStr(item.TagName))
 			if err != nil {
@@ -78,9 +81,8 @@ func getAllMinioReleasesUntilLast(repo, dateStr string) ([]string, error) {
 			// The first one that is earlier than the input date is the release we need.
 			result = append(result, item.TagName)
 		}
-		startPage += maxPerPage
+		startPage++
 	}
-	return nil, nil
 }
 
 func getAllPublishedImageTagsInGhcr() ([]string, error) {
