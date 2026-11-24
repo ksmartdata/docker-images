@@ -3,7 +3,7 @@ LABEL maintainer="Team ACID @ Zalando <team-acid@zalando.de>"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG TARGETARCH
-ARG RCLONE_RELEASE=1.74.3
+ARG RCLONE_RELEASE=1.75.1
 RUN apt-get update     \
     && apt-get install --no-install-recommends -y \
         apt-utils \
